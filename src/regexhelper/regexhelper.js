@@ -470,10 +470,11 @@ RegexHelper = Object.defineProperties(CompileEx, {
   , ParseRegex: { value: ParseRegex, enumerable: true }
 })
 
-if (typeof process === 'object'
-    && typeof process.title === 'string'
-    && process.title.indexOf('node') >= 0
-    && typeof module === 'object') {
-  module.exports = RegexHelper
-}
+module.exports = RegexHelper
+// if (typeof process === 'object'
+//     && typeof process.title === 'string'
+//     && process.title.indexOf('node') >= 0
+//     && typeof module === 'object') {
+//   module.exports = RegexHelper
+// }
 
