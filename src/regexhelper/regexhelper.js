@@ -70,7 +70,7 @@
       ; flags || (flags = '');
     }
 
-    return CompileSource(regexsrc, flags, regexLib)
+    return CompileSource(regexsrc, flags)
   }
 
   /**
@@ -127,7 +127,7 @@
    * @returns {RegExp}            - the compiled regex
    */
   function CompileSource (regexsrc, flags) {
-    var sticky, _flags
+    var regex, sticky, _flags
       , a, i, k;
 
     if ((k = ['/', regexsrc, '/', flags].join('')) in _RegexCache) {
@@ -136,14 +136,7 @@
 
     ; if (_PolyfillSticky) {
       sticky = (flags !== (_flags = flags.split('y').join('')))
-      ; Object.defineProperty(regex, 'sticky', {
-          value: { value: sticky, enumerable: true }, enumerable: { value: false, enumerable: true } })
     } else _flags = flags
-
-    if (_PolyfillFlags) {
-      Object.defineProperty(regex, 'flags', {
-          value: { value: flags, enumerable: true }, enumerable: { value: false, enumerable: true } })
-    }
 
     // compile and extract names
     names = [];
@@ -157,8 +150,17 @@
       return m
     })
     regex = new RegExp(regexsrc, _flags)
+    ; if (_PolyfillSticky) {
+      ; Object.defineProperty(regex, 'sticky', {
+          value: sticky, enumerable: false })
+    } else _flags = flags
+
+    if (_PolyfillFlags) {
+      Object.defineProperty(regex, 'flags', {
+          value: flags, enumerable: false })
+    }
     ; if (Object.keys(names).length) {
-      Object.defineProperty(regex, 'names', { value: { value: names, enumerable: true }, enumerable: { value: false, enumerable: true } })
+      Object.defineProperty(regex, 'names', { value: names, enumerable: false })
     }
     return _RegexCache[k] = regex
   }
@@ -380,7 +382,7 @@
    * Joins an object of RegExps using named cpature flags for each element
    * 
    * @static
-   * @param {Object} regexLib     - An array of RegExps
+   * @param {Object} regexlib     - An array of RegExps
    * @param {?string} sep      - seperator
    * @param {?string} prefix - prefix
    * @param {?string} suffix   - suffix
@@ -388,11 +390,11 @@
    *                                return, else a compiled regex
    * @returns {string|RegExp}
    */
-  function JoinNamedLib(regexLib, sep, prefix, suffix, flags) {
+  function JoinNamedLib(regexlib, sep, prefix, suffix, flags) {
     var a, k, m, s, re;
     a = [];
-    for (k in regexLib) {
-      a.push(s = ['(?<', k, '>', regexLib[k], ')'].join(''))
+    for (k in regexlib) {
+      a.push(s = ['(?<', k, '>', regexlib[k], ')'].join(''))
       if (flags === true) {
         try {
           Compile(s, '');
