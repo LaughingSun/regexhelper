@@ -155,7 +155,7 @@
    * @static
    * @param {string} regexsrc   - regex or regex source
    * @param {?Object} library   - sub regex library
-   * @param {boolean} extended  - sub regex library
+   * @param {boolean} extended  - extended mode
    * @returns {RegExp}          - the compiled regex
    */
   function CompileSource (regexsrc, lib, extended) {
@@ -222,11 +222,10 @@
           if (n[1]) j++; else if (n[2]) --j
           ; i = _CaptureRegex.lastIndex
         }
-        regexlib[k] = 
-            CleanSource(regexsrc.slice(_NamedCaptureRegex.lastIndex, n.index))
+        regexlib[k] = regexsrc.slice(_NamedCaptureRegex.lastIndex, n.index)
       }
     }
-    acc.push(regexsrc(i))
+    acc.push(regexsrc.slice(i))
     ; return acc.join('')
   }
   

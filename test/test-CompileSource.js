@@ -26,22 +26,18 @@ describe('RegexHelper.CompileSource', function(){
   describe('.CompileSource("^\\w+$")', function(){
     var f, i, k, r, s
       ;
-    it('should return a non-cached regex', function(){
-      assert.deepEqual(CompileSource("^\\w+$"), /^\w+$/);
+    it('should return a simple regex', function(){
+      assert.deepEqual(CompileSource("^\\w+$"), { err: undefined, src: '^\\w+$', names: [] });
     })
-    i = -1
-    ; s = /^\w+$/.source
-    ; while (++i < 16) {
-      f = FlagSet(i)
-      it(['should return a regex with', f, 'flags'].join(' '), function(){
-        r = CompileSource("^\\w+$", f)
-        ; assert.equal(r.source, s, 'bad source on ' + r.source);
-        ; assert.equal(r.flags, f), 'bad flags on ' + r.flags;
-        for (k in flagProperties) {
-          assert.equal(r[flagProperties[k]], f.indexOf(k) >= 0, 'bad flag property ' + flagProperties[k]);
-        }
-      })
-    }
+    it('should return a single capture regex', function(){
+      assert.deepEqual(CompileSource("^(\\w+)\\s*$"), { err: undefined, src: '^(\\w+)\\s*$', names: [] });
+    })
+    it('should return a single named capture regex', function(){
+      assert.deepEqual(CompileSource("^(?<word>\\w+)\\s*$"), { err: undefined, src: '^(\\w+)\\s*$', names: [, 'word'] });
+    })
+    it('extended: should return a single named capture regex', function(){
+      assert.deepEqual(CompileSource("^(?<word>\\w+)\\s*$", null, true), { err: undefined, src: '^(\\w+)\\s*$', names: [, 'word'] });
+    })
   })
 
 })
