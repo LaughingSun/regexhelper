@@ -29,6 +29,8 @@
 <header>
     
         
+            
+        
     
 </header>
 
@@ -36,6 +38,87 @@
     <div class="container-overview">
     
         
+            <div class="description">RegexHelper as a function is an alias for RegexHelper.Compile</div>
+        
+
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line25">line 25</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="module-RegexHelper.html#.Compile">module:RegexHelper.Compile</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         
     
@@ -46,13 +129,6 @@
     
 
     
-        <h3 class="subsection-title">Classes</h3>
-
-        <dl>
-            <dt><a href="module-RegexHelper-RegexHelper.html">RegexHelper</a></dt>
-            <dd></dd>
-        </dl>
-    
 
      
 
@@ -62,6 +138,264 @@
 
     
         <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id="._Compile"><span class="type-signature">(static) </span>_Compile<span class="signature">(regexsrc, flags, library<span class="signature-attributes">nullable</span>, errcb)</span><span class="type-signature"> &rarr; {RegExp}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Compile a Regular Expression.  Supports sticky, extended and flagsproperties, 'x' & 'y' flag, (?<namedcapture>), (?&<subregex>), whitespace,and (?#comments).
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>regexsrc</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">regex or regex source</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>flags</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">flags, if null and regex is a RegExp, then                             flags will be taken from regex</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>library</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                    &lt;nullable><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">sub regex library</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>errcb</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">callback</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">error cb</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line123">line 123</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - the compiled regex
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">RegExp</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
 
         
             
@@ -191,7 +525,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line209">line 209</a>
+        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line242">line 242</a>
     </li></ul></dd>
     
 
@@ -363,7 +697,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line175">line 175</a>
+        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line207">line 207</a>
     </li></ul></dd>
     
 
@@ -562,7 +896,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line310">line 310</a>
+        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line320">line 320</a>
     </li></ul></dd>
     
 
@@ -614,14 +948,14 @@
 
     
 
-    <h4 class="name" id=".CleanSource"><span class="type-signature">(static) </span>CleanSource<span class="signature">(regexsrc)</span><span class="type-signature"> &rarr; {string}</span></h4>
+    <h4 class="name" id=".Compile"><span class="type-signature">(static) </span>Compile<span class="signature">(regexsrc, flags, library<span class="signature-attributes">nullable</span>, errcb<span class="signature-attributes">nullable</span>)</span><span class="type-signature"> &rarr; {RegExp}</span></h4>
 
     
 
 
 
 <div class="description">
-    Renoves extended whitespace, comments and special tags, note this willalso remove DEFINEs, so extract those first before cleaning.
+    Compile a Regular Expression.  Supports sticky, extended and flagsproperties, 'x' & 'y' flag, (?<namedcapture>), (?&<subregex>), whitespace,and (?#comments). This is the same as _Compile except that it can takea native RegExp or RegExp source as the first argument, it also does typechecking.
 </div>
 
 
@@ -644,6 +978,8 @@
 
         <th>Type</th>
 
+        
+        <th>Attributes</th>
         
 
         
@@ -670,160 +1006,6 @@
             </td>
 
             
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line234">line 234</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">string</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id=".Compile"><span class="type-signature">(static) </span>Compile<span class="signature">(regex, flags<span class="signature-attributes">nullable</span>)</span><span class="type-signature"> &rarr; {RegExp}</span></h4>
-
-    
-
-
-
-<div class="description">
-    Compile a Regular Expression.  Supports sticky and flags properties,'y' flag, and (?<namedcapture>).
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>regex</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-|
-
-<span class="param-type">RegExp</span>
-
-
-            
-            </td>
-
-            
                 <td class="attributes">
                 
 
@@ -859,8 +1041,6 @@
                 
 
                 
-                    &lt;nullable><br>
-                
 
                 
                 </td>
@@ -868,213 +1048,14 @@
 
             
 
-            <td class="description last">flags, if null and regex is a RegExp, then                               flags will be taken from regex</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line60">line 60</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    - the compiled regex
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">RegExp</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id=".CompileEx"><span class="type-signature">(static) </span>CompileEx<span class="signature">(regex, flags<span class="signature-attributes">nullable</span>, regexlib<span class="signature-attributes">nullable</span>)</span><span class="type-signature"> &rarr; {RegExp}</span></h4>
-
-    
-
-
-
-<div class="description">
-    Compile an extended Regular Expression.  Supports sticky and flagsproperties, 'y' flag, (?<namedcapture>), (?&<subregex>), whitespace,and (?#comments).
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>regex</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-|
-
-<span class="param-type">RegExp</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">regex or regex source</td>
+            <td class="description last">flags, if null and regex is a RegExp, then                             flags will be taken from regex</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>flags</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-                    &lt;nullable><br>
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">flags, if null and regex is a RegExp, then                               flags will be taken from regex</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>regexlib</code></td>
+                <td class="name"><code>library</code></td>
             
 
             <td class="type">
@@ -1100,7 +1081,40 @@
 
             
 
-            <td class="description last">library of sub regexes (name: { value: subregex, enumerable: true })</td>
+            <td class="description last">sub regex library</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>errcb</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">callback</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                    &lt;nullable><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">error cb</td>
         </tr>
 
     
@@ -1141,7 +1155,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line88">line 88</a>
+        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line77">line 77</a>
     </li></ul></dd>
     
 
@@ -1194,7 +1208,7 @@
 
     
 
-    <h4 class="name" id=".CompileSource"><span class="type-signature">(static) </span>CompileSource<span class="signature">(regexsrc, flags<span class="signature-attributes">nullable</span>)</span><span class="type-signature"> &rarr; {RegExp}</span></h4>
+    <h4 class="name" id=".CompileSource"><span class="type-signature">(static) </span>CompileSource<span class="signature">(regexsrc, library<span class="signature-attributes">nullable</span>, extended)</span><span class="type-signature"> &rarr; {RegExp}</span></h4>
 
     
 
@@ -1270,13 +1284,13 @@
 
         <tr>
             
-                <td class="name"><code>flags</code></td>
+                <td class="name"><code>library</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type">Object</span>
 
 
             
@@ -1296,7 +1310,38 @@
 
             
 
-            <td class="description last">flags, if null and regex is a RegExp, then                               flags will be taken from regex</td>
+            <td class="description last">sub regex library</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>extended</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">sub regex library</td>
         </tr>
 
     
@@ -1337,7 +1382,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line129">line 129</a>
+        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line161">line 161</a>
     </li></ul></dd>
     
 
@@ -1564,7 +1609,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line261">line 261</a>
+        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line270">line 270</a>
     </li></ul></dd>
     
 
@@ -1716,7 +1761,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line113">line 113</a>
+        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line56">line 56</a>
     </li></ul></dd>
     
 
@@ -1765,7 +1810,7 @@
 
     
 
-    <h4 class="name" id=".JoinNamedLib"><span class="type-signature">(static) </span>JoinNamedLib<span class="signature">(regexLib, sep<span class="signature-attributes">nullable</span>, prefix<span class="signature-attributes">nullable</span>, suffix<span class="signature-attributes">nullable</span>, flags<span class="signature-attributes">nullable</span>)</span><span class="type-signature"> &rarr; {string|RegExp}</span></h4>
+    <h4 class="name" id=".JoinNamedLib"><span class="type-signature">(static) </span>JoinNamedLib<span class="signature">(regexlib, sep<span class="signature-attributes">nullable</span>, prefix<span class="signature-attributes">nullable</span>, suffix<span class="signature-attributes">nullable</span>, flags<span class="signature-attributes">nullable</span>)</span><span class="type-signature"> &rarr; {string|RegExp}</span></h4>
 
     
 
@@ -1810,7 +1855,7 @@
 
         <tr>
             
-                <td class="name"><code>regexLib</code></td>
+                <td class="name"><code>regexlib</code></td>
             
 
             <td class="type">
@@ -2007,7 +2052,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line391">line 391</a>
+        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line406">line 406</a>
     </li></ul></dd>
     
 
@@ -2301,7 +2346,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line359">line 359</a>
+        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line371">line 371</a>
     </li></ul></dd>
     
 
@@ -2496,7 +2541,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line445">line 445</a>
+        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line462">line 462</a>
     </li></ul></dd>
     
 
@@ -2671,7 +2716,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line329">line 329</a>
+        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line340">line 340</a>
     </li></ul></dd>
     
 
@@ -2775,9 +2820,6 @@
             <td class="type">
             
                 
-<span class="param-type">string</span>
-|
-
 <span class="param-type">RegExp</span>
 
 
@@ -2901,7 +2943,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line282">line 282</a>
+        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line292">line 292</a>
     </li></ul></dd>
     
 
@@ -3096,7 +3138,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line419">line 419</a>
+        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line435">line 435</a>
     </li></ul></dd>
     
 
@@ -3156,13 +3198,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-RegexHelper.html">RegexHelper</a></li></ul><h3>Classes</h3><ul><li><a href="module-RegexHelper-RegexHelper.html">RegexHelper</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-RegexHelper.html">RegexHelper</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.1</a> on Thu Jun 18 2015 12:55:22 GMT+0800 (Malay Peninsula Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.1</a> on Thu Jun 18 2015 23:00:03 GMT+0800 (Malay Peninsula Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>

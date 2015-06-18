@@ -22,90 +22,33 @@
  * THE SOFTWARE.
  */
 
-/** @module RegexHelper */
-
 /**
- * RegexHelper as a function is an alias for RegexHelper.CompileEx
+ * RegexHelper as a function is an alias for RegexHelper.Compile
  * 
- * @class RegexHelper
- * @alias CompileEx
- * @see RegexHelper.CompileEx
+ * @module RegexHelper
+ * @alias Compile
+ * @see module:RegexHelper.Compile
  */
 
-  var _RegexCache = {}
+  var _SourceCache = {}
     , _StickyRegexCache = {}
     , _PolyfillSticky = RegExp.prototype.sticky === undefined
     , _PolyfillFlags = RegExp.prototype.flags === undefined
+    , _CompileRegex = /[^\(\)\\\[]+|\\[^]|\[[^\]]+\]|(\()(?:\?<(\w+)>|\?&(\w+)\)|(?!\?))/g
+    , _CompileExRegex = /[^\(\)\\\[\s\r\n]+|\\[^]|\[[^\]]+\]|(\()(?:|\?<(\w+)>|\?&(\w+)\)|(?!\?))|([\s\r\n]+|\(\?#(?:[^\)\\]+|\\.)*\))/g
     , _DefineRegex = /\(\?\(\s*DEFINE\s*\)/g
     , _NamedCaptureRegex = /\(\?<(\w+)>/g
     , _CaptureRegex = /[^\(\)\\\[]+|\\.|\[[^\]]+\]|(\()|(\))/g
     , _SubRegex = /[^\(\)\\\[]+|\\.|\[[^\]]+\]|\(\?&(\w+)\)|\(/g
-//    , _CleanRegex = /[^\(\)\\\[]+|\\.|\[[^\]]+\]|(\s+)|(\(\?\((?:[^\)\\]+|\\.)*\))|(\(\?#(?:[^\)\\]+|\\.)*\))|\(/g
-    , _CleanRegex = /[^\(\)\\\[]+|\\.|\[[^\]]+\]|(\s+|\(\?#(?:[^\)\\]+|\\.)*\))|(\(\?\((?:[^\)\\]+|\\.)*\))|\(/g
-
     , _FlagsRegex = /\/(\w*)$/
+    , _SupportedFlags = 'gimxy'
     , RegexHelper
     ;
   
   /**
-   * Compile a Regular Expression.  Supports sticky and flags properties,
-   * 'y' flag, and (?<namedcapture>).
-   * 
-   * @static
-   * @param {string|RegExp} regex - regex or regex source
-   * @param {?string} flags       - flags, if null and regex is a RegExp, then
-   *                                flags will be taken from regex
-   * @returns {RegExp}            - the compiled regex
-   */
-  function Compile (regex, flags) {
-    var regexsrc
-      ;
-
-    if (regex instanceof RegExp) {
-      regexsrc = regex.source
-      ; if (flags == null) flags = _PolyfillFlags
-          ? _FlagsRegex.exec(regex.toString())[1] : regex.flags
-    } else {
-      regexsrc = regex
-      ; flags || (flags = '');
-    }
-
-    return CompileSource(regexsrc, flags)
-  }
-
-  /**
-   * Compile an extended Regular Expression.  Supports sticky and flags
-   * properties, 'y' flag, (?<namedcapture>), (?&<subregex>), whitespace,
-   * and (?#comments).  
-   * 
-   * @static
-   * @param {string|RegExp} regex - regex or regex source
-   * @param {?string} flags       - flags, if null and regex is a RegExp, then
-   *                                flags will be taken from regex
-   * @param {?Object} regexlib    - library of sub regexes (name: { value: subregex, enumerable: true })
-   * @returns {RegExp}            - the compiled regex
-   */
-  function CompileEx (regex, flags, regexlib) {
-    var regexsrc, lib
-      , a, i, k;
-
-    if (regex instanceof RegExp) {
-      regexsrc = regex.source
-      ; if (flags == null) flags = _PolyfillFlags ? _FlagsRegex.exec(regex.toString())[1] : regex.flags
-    } else {
-      regexsrc = regex;
-      flags || (flags = '');
-    }
-    if ((k = ['/', regexsrc, '/', flags].join('')) in _RegexCache) return _RegexCache[k];
-
-    return _RegexCache[k] = CompileSource(_EmbedNamedLib(CleanReagex(
-        _ExtractDefineLib(regexsrc, regexlib || (regexlib = {}))
-        ), regexlib), flags)
-  }
-
-  /**
    * Get flags from a RegExp instance
    * 
+   * @memberof module:RegexHelper
    * @static
    * @param {RegExp} regex
    * @returns {string}
@@ -116,59 +59,146 @@
   }
 
   /**
-   * Compile an extended Regular Expression.  Supports sticky and flags
-   * properties, 'y' flag, (?<namedcapture>), (?&<subregex>), whitespace,
-   * and (?#comments).  
+   * Compile a Regular Expression.  Supports sticky, extended and flags
+   * properties, 'x' & 'y' flag, (?<namedcapture>), (?&<subregex>), whitespace,
+   * and (?#comments). This is the same as _Compile except that it can take
+   * a native RegExp or RegExp source as the first argument, it also does type
+   * checking.
    * 
+   * @memberof module:RegexHelper
    * @static
-   * @param {string} regexsrc     - regex or regex source
-   * @param {?string} flags       - flags, if null and regex is a RegExp, then
-   *                                flags will be taken from regex
-   * @returns {RegExp}            - the compiled regex
+   * @param {string} regexsrc   - regex or regex source
+   * @param {string} flags      - flags, if null and regex is a RegExp, then
+   *                              flags will be taken from regex
+   * @param {?Object} library   - sub regex library
+   * @param {?callback} errcb   - error cb
+   * @returns {RegExp}          - the compiled regex
    */
-  function CompileSource (regexsrc, flags) {
-    var regex, sticky, _flags
-      , a, i, k;
+  function Compile (regexsrc, flags, lib, errcb) {
+    var regexsrc
+      , a, i, t
+      ;
 
-    if ((k = ['/', regexsrc, '/', flags].join('')) in _RegexCache) {
-      return _RegexCache[k];
+    errcb || (errcb = function (err) { throw err})
+    if (regex instanceof RegExp) {
+      regexsrc = regex.source
+      ; if (flags == null) flags = _PolyfillFlags
+          ? _FlagsRegex.exec(regex.toString())[1] : regex.flags
+    } else {
+      regexsrc = regex
+      ; if (flags) {
+        // check supported flags
+        if ((t = typeof flags) !== 'string') {
+          return errcb(new Error('expected flags string (second argument), but found: ' + t))
+        }
+        i = flags.length; a = []
+        ; while (i--) {
+          if (_SupportedFlags.indexOf(t = flags[i]) < 0
+              || flags.indexOf(t) != i) a[i] = flags[i]
+        }
+        if (a.length) return errcb(new Error('unsupported or duplicate flags: ' + a.join('')))
+      } else flags = ''
+    }
+    ; if (lib != null && ! (lib instanceof Object)) {
+      return errcb(new Error('invalid Library (third argument)'))
     }
 
-    ; if (_PolyfillSticky) {
-      sticky = (flags !== (_flags = flags.split('y').join('')))
-    } else _flags = flags
+    return CompileSource(regexsrc, flags)
+  }
 
-    // compile and extract names
-    names = [];
-    i = 1;
-    regexsrc = regexsrc.replace(/\((\?<[\w-]+>|(?!\?))|\\[^]/g, function (m) {
-      if (m[0] === '(') {
-        if (m[2] === '<') names[i] = m.slice(3, -1);
-        i++;
-        return '('
-      }
-      return m
-    })
-    regex = new RegExp(regexsrc, _flags)
-    ; if (_PolyfillSticky) {
-      ; Object.defineProperty(regex, 'sticky', {
-          value: sticky, enumerable: false })
-    } else _flags = flags
+  /**
+   * Compile a Regular Expression.  Supports sticky, extended and flags
+   * properties, 'x' & 'y' flag, (?<namedcapture>), (?&<subregex>), whitespace,
+   * and (?#comments).  
+   * 
+   * @memberof module:RegexHelper
+   * @static
+   * @param {string} regexsrc   - regex or regex source
+   * @param {string} flags      - flags, if null and regex is a RegExp, then
+   *                              flags will be taken from regex
+   * @param {?Object} library   - sub regex library
+   * @param {callback} errcb   - error cb
+   * @returns {RegExp}          - the compiled regex
+   */
+  function _Compile (regexsrc, flags, lib, errcb) {
+    var regex
+      , c, f, x
+      ;
 
+    if ((c = CompileSource(regexsrc, lib, isExtended)).err) errcb(c.err, regexsrc, flags, lib)
+    ; f = (x = (flags = flags.split('').sort().join('')).indexOf('x')
+        >= 0) ? flags.replace(/x/g, '') : flags
+    ; _PolyfillSticky && (f = f.replace(/[xy]/g, ''))
+
+    ; Object.defineProperty(regex = new RegExp(c.src, f), 'extended'
+        , { value: x, enumerable: false })
+    ; if (_PolyfillSticky) {
+      Object.defineProperty(regex, 'sticky', {
+          value: flags.indexOf('y') >= 0, enumerable: false })
+    }
     if (_PolyfillFlags) {
       Object.defineProperty(regex, 'flags', {
           value: flags, enumerable: false })
     }
-    ; if (Object.keys(names).length) {
-      Object.defineProperty(regex, 'names', { value: names, enumerable: false })
+    ; if (c.names) {
+      Object.defineProperty(regex, 'names', { value: c.names, enumerable: false })
     }
-    return _RegexCache[k] = regex
+    return regex
+  }
+
+  /**
+   * Compile an extended Regular Expression.  Supports sticky and flags
+   * properties, 'y' flag, (?<namedcapture>), (?&<subregex>), whitespace,
+   * and (?#comments).  
+   * 
+   * @memberof module:RegexHelper
+   * @static
+   * @param {string} regexsrc   - regex or regex source
+   * @param {?Object} library   - sub regex library
+   * @param {boolean} extended  - sub regex library
+   * @returns {RegExp}          - the compiled regex
+   */
+  function CompileSource (regexsrc, lib, extended) {
+    var key = [regexsrc, JSON.stringify(lib || null), !! extended].join()
+      , a, e, i, j, k, m, n, r, t
+      ;
+
+    if (key in _SourceCache) return _SourceCache[key]
+
+    ; if (extended && lib == null) {
+      regexsrc = _ExtractDefineLib(regexsrc, lib = {})
+    }
+
+    ; a = []; i = 1; n = []
+    ; (r = extended ? _CompileExRegex : _CompileRegex).lastIndex = j = 0
+    ; while (m = r.exec(regexsrc)) {
+      a.push(regexsrc.slice(j, m.index))
+      ; j = r.lastIndex
+      ; if ( m[1] ) {
+        if (k = m[2]) n[i] = k
+        ; a.push('(')
+        i++;
+      } else if (k = m[3]) {
+        if (lib && k in lib) {
+          a.push(lib[k])
+        } else {
+          t = new Error('no such sub regex source ', k, ' in library')
+          ; if (!e) {
+           e = t
+          } else if (e instanceof Array) { e.push(t) } else { e = [e, t] }
+        }
+      } else if (!m[4]) a.push(m[0])
+    }
+    a.push(regexsrc.slice(j))
+
+    ; return _SourceCache[key] = {err: e, src: a.join(''), names: n}
   }
 
   /**
    * Parse and extract regex library from regexsrc, returns source with all
    * defines removed and regexlib populated with the extracted definitions
    * 
+   * @memberof module:RegexHelper
    * @static
    * @param {string} regexsrc   - regex source
    * @param {Object} regexlib   - required will contain the extracted library
@@ -203,6 +233,7 @@
   /**
    * Replaces sub patterns names with their subpatterns from the regexlib
    * 
+   * @memberof module:RegexHelper
    * @static
    * @param {string} regexsrc
    * @param {Object} regexlib
@@ -226,34 +257,10 @@
   }
   
   /**
-   * Renoves extended whitespace, comments and special tags, note this will
-   * also remove DEFINEs, so extract those first before cleaning.
-   * 
-   * @static
-   * @param {string} regexsrc
-   * @returns {string}
-   */
-  function CleanSource (regexsrc) {
-    var i = 0
-      , acc = []
-      , m
-      ;
-
-    _CleanRegex.lastIndex = i
-    ; while (m = _CleanRegex.exec(regexsrc)) {
-      acc.push(regexsrc.slice(i, m.index))
-      ; acc.push(m[1] ? ''
-          : m[2] ? '(?:' : m[0])
-      ; i = _CleanRegex.lastIndex
-    }
-    acc.push(regexsrc.slice(i))
-    ; return acc.join('')
-  }
-  
-  /**
    * The RegExp.exec method with support for named capture and sticky(ness).
    * To use the sticky flags, set the sticky propeerty to true.
    * 
+   * @memberof module:RegexHelper
    * @static
    * @param {RegExp} regex    - the applied regex
    * @param {string} input    - string to regex
@@ -275,8 +282,9 @@
   /**
    * The RegExp.exec method using sticky as set with support for named capture.
    * 
+   * @memberof module:RegexHelper
    * @static
-   * @param {string|RegExp} regex   - regex or regex source
+   * @param {RegExp} regex   - regex or regex source
    * @param {string} input          - string to regex
    * @param {?int} offset           - the offset (not index) for the input
    * @returns {Array|match}
@@ -285,14 +293,13 @@
     var k, m, r
       ;
     ; if (!((k=regex.toString()) in _StickyRegexCache)) {
-      (_StickyRegexCache[k] = (regex instanceof RegExp)
-          ? new RegExp(regex.source + '|([^])', 'g' + (/\/([gimy]*)$/
-              .exec(k))[1].replace(/[gy]/g, ''))
-          : new RegExp(regex + '|([^])', 'g')).lastIndex = regex.lastIndex
-              || offset
+      _StickyRegexCache[k] = new RegExp(regex.source + '|([^])'
+          , 'g' + (/\/([gimy]*)$/.exec(k))[1].replace(/[gy]/g, ''))
     }
-    ; if (m = _StickyExec(r = _StickyRegexCache[k], input, offset || 0)) {
-      regex.lastIndex = (regex.global ? r.lastIndex : offset || 0)
+    (r = _StickyRegexCache[k]).lastIndex
+        = regex.lastIndex
+    ; if (m = _StickyExec(r, input, offset || (offset = 0))) {
+      regex.lastIndex = (regex.global ? r.lastIndex : offset)
       ; return PropagateNamed(m, regex.names)
     }
     return null
@@ -303,6 +310,7 @@
    * (support for sticky must be added manually by appending '|([^]) to the
    * regex source). Also lastIndex must be set manually before the call.
    * 
+   * @memberof module:RegexHelper
    * @static
    * @param {RegExp} regex          - regex or regex source
    * @param {string} input          - string to regex
@@ -322,6 +330,7 @@
   /**
    * Propagates the named capture property
    * 
+   * @memberof module:RegexHelper
    * @static
    * @param {Array} match         - the result array from a regex.exec call
    * @param {Array|Object} names  - the index:name or name:index lookup map
@@ -349,6 +358,7 @@
   /**
    * Joins an array of RegExps
    * 
+   * @memberof module:RegexHelper
    * @static
    * @param {Array} regexlist     - An array of RegExps
    * @param {?string} sep      - seperator
@@ -359,28 +369,31 @@
    * @returns {string|RegExp}
    */
   function JoinRegex(regexlist, sep, prefix, suffix, flags) {
-    var a, i, k, m, s, re;
-    a = [];
-    for (i = 0; i < regexlist.length; i++) {
+    var a, i, s
+      ;
+
+    a = []
+    ; for (i = 0; i < regexlist.length; i++) {
       a.push(s = regexlist[i])
-      if (flags === true) {
+      ; if (flags === true) {
         try {
-          Compile(s, '');
+          Compile(s, '')
         } catch (e) {
-          console.log(i, JSON.stringify(s), e);
+          console.log(i, JSON.stringify(s), e)
         }
       }
     }
     s = [(typeof prefix === 'string') ? prefix : '(?:'
       , a.join((typeof sep === 'string') ? sep : '|')
-      , (typeof suffix === 'string') ? suffix : ')'].join('');
-    if (typeof flags !== 'string') return s;
-    return Compile(s, flags)
+      , (typeof suffix === 'string') ? suffix : ')'].join('')
+    ; if (typeof flags !== 'string') return s
+    ; return Compile(s, flags)
   }
 
   /**
    * Joins an object of RegExps using named cpature flags for each element
    * 
+   * @memberof module:RegexHelper
    * @static
    * @param {Object} regexlib     - An array of RegExps
    * @param {?string} sep      - seperator
@@ -391,7 +404,7 @@
    * @returns {string|RegExp}
    */
   function JoinNamedLib(regexlib, sep, prefix, suffix, flags) {
-    var a, k, m, s, re;
+    var a, k, s;
     a = [];
     for (k in regexlib) {
       a.push(s = ['(?<', k, '>', regexlib[k], ')'].join(''))
@@ -413,6 +426,7 @@
   /**
    * A JSON Stringify replacement or as a callback
    * 
+   * @memberof module:RegexHelper
    * @static
    * @param {?mixed} key  - the key (if used as callback)
    * @param {object} obj  - RegExp or pass through object
@@ -439,6 +453,7 @@
   /**
    * A JSON parse replacement or as a callback
    * 
+   * @memberof module:RegexHelper
    * @static
    * @param {?mixed} key  - the key (if used as callback)
    * @param {object} obj  - RegExp or pass through object
@@ -454,12 +469,11 @@
     return conf
   }
 
-RegexHelper = Object.defineProperties(CompileEx, {
-  Compile: { value: Compile, enumerable: true }
-  , CompileEx: { value: CompileEx, enumerable: true }
-  , GetFlags: { value: GetFlags, enumerable: true }
+RegexHelper = Object.defineProperties(Compile, {
+  GetFlags: { value: GetFlags, enumerable: true }
+  , Compile: { value: Compile, enumerable: true }
+  , _Compile: { value: _Compile, enumerable: true }
   , CompileSource: { value: CompileSource, enumerable: true }
-  , CleanSource: { value: CleanSource, enumerable: true }
   , _ExtractDefineLib: { value: _ExtractDefineLib, enumerable: true }
   , _EmbedNamedLib: { value: _EmbedNamedLib, enumerable: true }
   , Exec: { value: Exec, enumerable: true }
@@ -472,11 +486,9 @@ RegexHelper = Object.defineProperties(CompileEx, {
   , ParseRegex: { value: ParseRegex, enumerable: true }
 })
 
-module.exports = RegexHelper
-// if (typeof process === 'object'
-//     && typeof process.title === 'string'
-//     && process.title.indexOf('node') >= 0
-//     && typeof module === 'object') {
-//   module.exports = RegexHelper
-// }
+//module.exports = RegexHelper
+if (typeof process === 'object'
+    && typeof module === 'object') {
+  module.exports = RegexHelper
+}
 
