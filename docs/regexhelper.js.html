@@ -1,7 +1,35 @@
-/* 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: regexhelper.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: regexhelper.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/* 
  * The MIT License
  *
- * Copyright 2015 "Erich Horn" <erichhorn78@gmail.com>.
+ * Copyright 2015 "Erich Horn" &lt;erichhorn78@gmail.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -37,9 +65,9 @@
     , _PolyfillSticky = RegExp.prototype.sticky === undefined
     , _PolyfillFlags = RegExp.prototype.flags === undefined
     , _DefineRegex = /\(\?\(\s*DEFINE\s*\)/g
-    , _NamedCaptureRegex = /\(\?<(\w+)>/g
+    , _NamedCaptureRegex = /\(\?&lt;(\w+)>/g
     , _CaptureRegex = /[^\(\)\\\[]+|\\.|\[[^\]]+\]|(\()|(\))/g
-    , _SubRegex = /[^\(\)\\\[]+|\\.|\[[^\]]+\]|\(\?&(\w+)\)|\(/g
+    , _SubRegex = /[^\(\)\\\[]+|\\.|\[[^\]]+\]|\(\?&amp;(\w+)\)|\(/g
 //    , _CleanRegex = /[^\(\)\\\[]+|\\.|\[[^\]]+\]|(\s+)|(\(\?\((?:[^\)\\]+|\\.)*\))|(\(\?#(?:[^\)\\]+|\\.)*\))|\(/g
     , _CleanRegex = /[^\(\)\\\[]+|\\.|\[[^\]]+\]|(\s+|\(\?#(?:[^\)\\]+|\\.)*\))|(\(\?\((?:[^\)\\]+|\\.)*\))|\(/g
 
@@ -49,7 +77,7 @@
   
   /**
    * Compile a Regular Expression.  Supports sticky and flags properties,
-   * 'y' flag, and (?<namedcapture>).
+   * 'y' flag, and (?&lt;namedcapture>).
    * 
    * @static
    * @param {string|RegExp} regex - regex or regex source
@@ -75,7 +103,7 @@
 
   /**
    * Compile an extended Regular Expression.  Supports sticky and flags
-   * properties, 'y' flag, (?<namedcapture>), (?&<subregex>), whitespace,
+   * properties, 'y' flag, (?&lt;namedcapture>), (?&amp;&lt;subregex>), whitespace,
    * and (?#comments).  
    * 
    * @static
@@ -112,12 +140,12 @@
    */
   function GetFlags (regex) {
     var m = _FlagsRegex.exec(regex.toString())
-    ; return m && m[1]
+    ; return m &amp;&amp; m[1]
   }
 
   /**
    * Compile an extended Regular Expression.  Supports sticky and flags
-   * properties, 'y' flag, (?<namedcapture>), (?&<subregex>), whitespace,
+   * properties, 'y' flag, (?&lt;namedcapture>), (?&amp;&lt;subregex>), whitespace,
    * and (?#comments).  
    * 
    * @static
@@ -148,9 +176,9 @@
     // compile and extract names
     names = [];
     i = 1;
-    regexsrc = regexsrc.replace(/\((\?<[\w-]+>|(?!\?))|\\[^]/g, function (m) {
+    regexsrc = regexsrc.replace(/\((\?&lt;[\w-]+>|(?!\?))|\\[^]/g, function (m) {
       if (m[0] === '(') {
-        if (m[2] === '<') names[i] = m.slice(3, -1);
+        if (m[2] === '&lt;') names[i] = m.slice(3, -1);
         i++;
         return '('
       }
@@ -186,7 +214,7 @@
         k = n[1]
         ; j = 1
         ; _CaptureRegex.lastIndex = i = _NamedCaptureRegex.lastIndex
-        ; while (j && (n = _CaptureRegex.exec(regexsrc))) {
+        ; while (j &amp;&amp; (n = _CaptureRegex.exec(regexsrc))) {
           if (n[1]) j++; else if (n[2]) --j
           ; i = _CaptureRegex.lastIndex
         }
@@ -215,7 +243,7 @@
     _SubRegex.lastIndex = i
     ; while (m = _SubRegex.exec(regexsrc)) {
       acc.push(regexsrc.slice(i, m.index))
-      ; acc.push(((k = m[1]) && regexlib.hasOwnProperty(k))
+      ; acc.push(((k = m[1]) &amp;&amp; regexlib.hasOwnProperty(k))
           ? regexlib(k) : m[0])
       ; i = _SubRegex.lastIndex
     }
@@ -259,8 +287,8 @@
    * @returns {Array|match}
    */
   function Exec (regex, input, offset) {
-    if (_PolyfillSticky && regex.sticky) return StickyExec(regex, input, offset)
-    ; if ((regex.lastIndex -= (offset || (offset = 0))) < 0
+    if (_PolyfillSticky &amp;&amp; regex.sticky) return StickyExec(regex, input, offset)
+    ; if ((regex.lastIndex -= (offset || (offset = 0))) &lt; 0
         || !(match = regex.exec(input))) {
       regex.lastIndex = offset
       ; return null
@@ -310,7 +338,7 @@
   function _StickyExec (regex, input, offset) {
     var match
       ;
-    ; if ((regex.lastIndex -= offset) < 0 || !(match = regex.exec(input))
+    ; if ((regex.lastIndex -= offset) &lt; 0 || !(match = regex.exec(input))
         || match.pop() !== undefined) return null
     ; regex.lastIndex += offset
     ; match.index += offset
@@ -329,11 +357,11 @@
   function PropagateNamed (match, names) {
     var i, k, n
     ;
-    if (match && names instanceof Object) {
+    if (match &amp;&amp; names instanceof Object) {
       match.named = n = {}
       ; if (names instanceof Array) {
-        ; for (i = 0; i < names.length; i++) {
-          if ((k = names[i]) && match[i] !== undefined) n[k] = match[i]
+        ; for (i = 0; i &lt; names.length; i++) {
+          if ((k = names[i]) &amp;&amp; match[i] !== undefined) n[k] = match[i]
         }
       } else {
         ; for (k in names) if (match[i = names[k]] !== undefined) {
@@ -359,7 +387,7 @@
   function JoinRegex(regexlist, sep, prefix, suffix, flags) {
     var a, i, k, m, s, re;
     a = [];
-    for (i = 0; i < regexlist.length; i++) {
+    for (i = 0; i &lt; regexlist.length; i++) {
       a.push(s = regexlist[i])
       if (flags === true) {
         try {
@@ -392,7 +420,7 @@
     var a, k, m, s, re;
     a = [];
     for (k in regexLib) {
-      a.push(s = ['(?<', k, '>', regexLib[k], ')'].join(''))
+      a.push(s = ['(?&lt;', k, '>', regexLib[k], ')'].join(''))
       if (flags === true) {
         try {
           Compile(s, '');
@@ -445,8 +473,8 @@
   function ParseRegex (key, json) {
     var conf;
     conf = (arguments.length == 1) ? JSON.parse(key) : json;
-    if (conf instanceof Object && conf.constructor === 'RegExp'
-        && 'source' in conf) {
+    if (conf instanceof Object &amp;&amp; conf.constructor === 'RegExp'
+        &amp;&amp; 'source' in conf) {
       return Compile(conf.source, conf.flags, conf.names)
     }
     return conf
@@ -471,9 +499,32 @@ RegexHelper = Object.defineProperties(CompileEx, {
 })
 
 if (typeof process === 'object'
-    && typeof process.title === 'string'
-    && process.title.indexOf('node') >= 0
-    && typeof module === 'object') {
+    &amp;&amp; typeof process.title === 'string'
+    &amp;&amp; process.title.indexOf('node') >= 0
+    &amp;&amp; typeof module === 'object') {
   module.exports = RegexHelper
 }
 
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-RegexHelper.html">RegexHelper</a></li></ul><h3>Classes</h3><ul><li><a href="module-RegexHelper-RegexHelper.html">RegexHelper</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.1</a> on Thu Jun 18 2015 12:47:40 GMT+0800 (Malay Peninsula Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
