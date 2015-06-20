@@ -349,7 +349,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line123">line 123</a>
+        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line124">line 124</a>
     </li></ul></dd>
     
 
@@ -402,14 +402,14 @@
 
     
 
-    <h4 class="name" id="._EmbedNamedLib"><span class="type-signature">(static) </span>_EmbedNamedLib<span class="signature">(regexsrc, regexlib)</span><span class="type-signature"> &rarr; {string}</span></h4>
+    <h4 class="name" id="._CompileSource"><span class="type-signature">(static) </span>_CompileSource<span class="signature">(regexsrc, extended<span class="signature-attributes">nullable</span>, lastIndex<span class="signature-attributes">nullable</span>)</span><span class="type-signature"> &rarr; {RegExp}</span></h4>
 
     
 
 
 
 <div class="description">
-    Replaces sub patterns names with their subpatterns from the regexlib
+    Compile an extended Regular Expression.  Supports sticky and flagsproperties, 'y' flag, (?<namedcapture>), (?&<subregex>), whitespace,and (?#comments).
 </div>
 
 
@@ -432,6 +432,8 @@
 
         <th>Type</th>
 
+        
+        <th>Attributes</th>
         
 
         
@@ -458,33 +460,84 @@
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
 
             
 
-            <td class="description last"></td>
+            <td class="description last">regex or regex source</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>regexlib</code></td>
+                <td class="name"><code>extended</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type">boolean</span>
 
 
             
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+                    &lt;nullable><br>
+                
+
+                
+                </td>
+            
 
             
 
-            <td class="description last"></td>
+            <td class="description last">extended mode</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>lastIndex</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">int</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                    &lt;nullable><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">where to start compiling</td>
         </tr>
 
     
@@ -525,7 +578,296 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line241">line 241</a>
+        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line217">line 217</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - the compiled regex
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">RegExp</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="._EmbedSubroutines"><span class="type-signature">(static) </span>_EmbedSubroutines<span class="signature">(regexsrc, regexlib, lastIndex, stopIndex, errcb<span class="signature-attributes">nullable</span>)</span><span class="type-signature"> &rarr; {string}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Replaces sub patterns names with their subpatterns from the regexlib
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>regexsrc</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>regexlib</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>lastIndex</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">int</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">where to start compiling</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>stopIndex</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">int</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">where to stop compiling</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>errcb</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">callback</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                    &lt;nullable><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">call on error</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line327">line 327</a>
     </li></ul></dd>
     
 
@@ -574,7 +916,7 @@
 
     
 
-    <h4 class="name" id="._ExtractDefineLib"><span class="type-signature">(static) </span>_ExtractDefineLib<span class="signature">(regexsrc, regexlib)</span><span class="type-signature"> &rarr; {string}</span></h4>
+    <h4 class="name" id="._ExtractSubroutines"><span class="type-signature">(static) </span>_ExtractSubroutines<span class="signature">(regexsrc, regexlib, lastIndex, stopIndex, errcb<span class="signature-attributes">nullable</span>)</span><span class="type-signature"> &rarr; {string}</span></h4>
 
     
 
@@ -605,6 +947,8 @@
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
         
 
@@ -630,6 +974,14 @@
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
 
             
 
@@ -653,10 +1005,113 @@
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
 
             
 
             <td class="description last">required will contain the extracted library</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>lastIndex</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">int</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">where to start compiling</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>stopIndex</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">int</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">where to stop compiling</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>errcb</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">callback</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                    &lt;nullable><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">call on error</td>
         </tr>
 
     
@@ -697,7 +1152,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line207">line 207</a>
+        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line266">line 266</a>
     </li></ul></dd>
     
 
@@ -896,7 +1351,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line319">line 319</a>
+        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line411">line 411</a>
     </li></ul></dd>
     
 
@@ -1155,7 +1610,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line77">line 77</a>
+        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line78">line 78</a>
     </li></ul></dd>
     
 
@@ -1208,7 +1663,7 @@
 
     
 
-    <h4 class="name" id=".CompileSource"><span class="type-signature">(static) </span>CompileSource<span class="signature">(regexsrc, library<span class="signature-attributes">nullable</span>, extended)</span><span class="type-signature"> &rarr; {RegExp}</span></h4>
+    <h4 class="name" id=".CompileSource"><span class="type-signature">(static) </span>CompileSource<span class="signature">(regexsrc, library)</span><span class="type-signature"> &rarr; {RegExp}</span></h4>
 
     
 
@@ -1239,8 +1694,6 @@
         <th>Type</th>
 
         
-        <th>Attributes</th>
-        
 
         
 
@@ -1266,14 +1719,6 @@
             </td>
 
             
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
 
             
 
@@ -1291,57 +1736,19 @@
             
                 
 <span class="param-type">Object</span>
+|
+
+<span class="param-type">true</span>
 
 
             
             </td>
 
             
-                <td class="attributes">
-                
-
-                
-                    &lt;nullable><br>
-                
-
-                
-                </td>
-            
 
             
 
-            <td class="description last">sub regex library</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>extended</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">extended mode</td>
+            <td class="description last">sub regex library or true to extract</td>
         </tr>
 
     
@@ -1609,7 +2016,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line269">line 269</a>
+        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line361">line 361</a>
     </li></ul></dd>
     
 
@@ -1761,7 +2168,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line56">line 56</a>
+        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line57">line 57</a>
     </li></ul></dd>
     
 
@@ -2052,7 +2459,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line405">line 405</a>
+        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line497">line 497</a>
     </li></ul></dd>
     
 
@@ -2346,7 +2753,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line370">line 370</a>
+        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line462">line 462</a>
     </li></ul></dd>
     
 
@@ -2541,7 +2948,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line461">line 461</a>
+        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line553">line 553</a>
     </li></ul></dd>
     
 
@@ -2716,7 +3123,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line339">line 339</a>
+        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line431">line 431</a>
     </li></ul></dd>
     
 
@@ -2943,7 +3350,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line291">line 291</a>
+        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line383">line 383</a>
     </li></ul></dd>
     
 
@@ -3138,7 +3545,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line434">line 434</a>
+        <a href="regexhelper.js.html">regexhelper.js</a>, <a href="regexhelper.js.html#line526">line 526</a>
     </li></ul></dd>
     
 
@@ -3204,7 +3611,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.1</a> on Thu Jun 18 2015 23:19:50 GMT+0800 (Malay Peninsula Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.1</a> on Sat Jun 20 2015 12:27:08 GMT+0800 (Malay Peninsula Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>

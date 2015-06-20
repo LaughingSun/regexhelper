@@ -34,11 +34,12 @@
     , _StickyRegexCache = {}
     , _PolyfillSticky = RegExp.prototype.sticky === undefined
     , _PolyfillFlags = RegExp.prototype.flags === undefined
-    , _CompileRegex = /[^\(\)\\\[]+|\\[^]|\[[^\]]+\]|(\()(?:\?<(\w+)>|\?&(\w+)\)|(?!\?))/g
-    , _CompileExRegex = /[^\(\)\\\[\s\r\n]+|\\[^]|\[[^\]]+\]|(\()(?:|\?<(\w+)>|\?&(\w+)\)|(?!\?))|([\s\r\n]+|\(\?#(?:[^\)\\]+|\\.)*\))/g
-    , _DefineRegex = /\(\?\(\s*DEFINE\s*\)/g
-    , _NamedCaptureRegex = /\(\?<(\w+)>/g
-    , _CaptureRegex = /[^\(\)\\\[]+|\\.|\[[^\]]+\]|(\()|(\))/g
+    , _CompileRegex   = /[^\(\)\\\[]+|\\[^]|\[[^\]]+\]|(\))|(\()(?:(?!\?)|\?<(\w+)>|\?(:|[!=]))/g
+    , _CompileExRegex = /[^\(\)\\\[\s\r\n]+|\\[^]|\[[^\]]+\]|(\))|(\()(?:(?!\?)|\?<(\w+)>|\?(:|[!=]))|([\s\r\n]+|\(\?#(?:[^\)\\]+|\\[^])*\))/g
+    , _DefineHeadRegex  = /(\\[^]|\[[^\]]+\]|\(\?#(?:[^\)\]+|\[^])*\))|\(\?\(DEFINE\)[\s\r\n]*(?:\(\?#(?:[^\)\]+|\[^])*\)[\s\r\n]*)*\((?:\(\?#(?:[^\)\]+|\[^])*\)[\s\r\n]*)*/g
+    , _DefineTailRegex  = /(?:[\s\r\n]+|\(\?#(?:[^\)\\]+|\\[^])*\))*\)(?:\(\?#(?:[^\)\]+|\[^])*\)[\s\r\n]*)*\)/g
+    , _SubrHeadRegex = /\(\?<(\w+)>/g
+    , _SubrTailRegex = /\)(?:[\s\r\n]+|\(\?#(?:[^\)\\]+|\\[^])*\))*/g
     , _SubRegex = /[^\(\)\\\[]+|\\.|\[[^\]]+\]|\(\?&(\w+)\)|\(/g
     , _FlagsRegex = /\/(\w*)$/
     , _SupportedFlags = 'gimxy'
@@ -153,32 +154,39 @@
    * 
    * @memberof module:RegexHelper
    * @static
-   * @param {string} regexsrc   - regex or regex source
-   * @param {?Object} library   - sub regex library
-   * @param {boolean} extended  - extended mode
-   * @returns {RegExp}          - the compiled regex
+   * @param {string} regexsrc       - regex or regex source
+   * @param {?Object|true} library  - sub regex library or true to extract
+   * @returns {RegExp}              - the compiled regex
    */
-  function CompileSource (regexsrc, lib, extended) {
-    var key = [regexsrc, JSON.stringify(lib || null), !! extended].join()
-      , a, e, i, j, k, m, n, r, t
+  function CompileSource (regexsrc, lib) {
+    var key = [regexsrc, JSON.stringify(lib || null)].join()
+      , a, d, e, i, j, k, l, m, n, r, t
       ;
 
     if (key in _SourceCache) return _SourceCache[key]
 
-    ; if (extended && lib == null) {
-      regexsrc = _ExtractDefineLib(regexsrc, lib = {})
-    }
+    ; if (lib === true) regexsrc = _ExtractSubroutines(regexsrc, lib = {})
 
-    ; a = []; i = 1; n = []
-    ; (r = extended ? _CompileExRegex : _CompileRegex).lastIndex = j = 0
-    ; while (m = r.exec(regexsrc)) {
+    ; l = regexsrc.length
+    ; a = []; i = d = 1; n = []
+    ; (r = lib ? _CompileExRegex : _CompileRegex).lastIndex = j = 0
+    ; while (d && (m = r.exec(regexsrc))) {
       a.push(regexsrc.slice(j, m.index))
       ; j = r.lastIndex
-      ; if ( m[1] ) {
-        if (k = m[2]) n[i] = k
-        ; a.push('(')
-        i++;
-      } else if (k = m[3]) {
+      ; console.log('match', m)
+      ; if (m[1]) {
+        if (--d) {
+          a.push(m[0])
+        } else {
+          l = j = m.index
+          ; break
+        }
+      } else if (m[2]) {
+        if (k = m[3]) n[i] = k
+        ; a.push(m[4] ? m[0] : '(')
+        ; i++
+        ; d++
+      } else if (k = m[4]) {
         if (lib && k in lib) {
           a.push(lib[k])
         } else {
@@ -189,11 +197,59 @@
         }
       } else if (!m[4]) a.push(m[0])
     }
-    a.push(regexsrc.slice(j))
+    a.push(regexsrc.slice(j, l))
 
-    ; return _SourceCache[key] = {err: e, src: a.join(''), names: n}
+    ; return _SourceCache[key] = {err: e || null, src: a.join(''), names: n, lastIndex: j}
   }
+  
+  /**
+   * Compile an extended Regular Expression.  Supports sticky and flags
+   * properties, 'y' flag, (?<namedcapture>), (?&<subregex>), whitespace,
+   * and (?#comments).  
+   * 
+   * @memberof module:RegexHelper
+   * @static
+   * @param {string} regexsrc       - regex or regex source
+   * @param {?boolean} extended     - extended mode
+   * @param {?int} lastIndex         - where to start compiling
+   * @returns {RegExp}              - the compiled regex
+   */
+  function _CompileSource (regexsrc, extended, lastIndex) {
+    var a, d, i, j, k, l, m, n, r
+      ;
 
+    ; l = regexsrc.length
+    ; a = []; i = d = 1; n = []
+    ; (r = extended ? _CompileExRegex : _CompileRegex).lastIndex = j =
+        lastIndex || 0
+    // ; console.log('using: ' + r.source)
+    ; while (d && (m = r.exec(regexsrc))) {
+      a.push(regexsrc.slice(j, m.index))
+      ; j = r.lastIndex
+      // ; console.log('match', m)
+      ; if (m[1]) {       // close parend
+        if (--d) a.push(m[0]); else {
+          l = j = m.index
+          ; break
+        }
+      } else if (m[2]) {      // open parend
+        d++
+        ; if (m[4]) {         // non-capture
+          a.push(m[0])
+        } else {              // capture
+          if (k = m[3]) n[i] = k  // named capture
+          ; a.push('(')
+          ; i++
+        }
+      } else if (!m[5]) {     // literal or native
+        a.push(m[0])
+      }                       // else discard
+    }
+    a.push(regexsrc.slice(j, l))
+
+    ; return {src: a.join(''), names: n, lastIndex: j}
+  }
+  
   /**
    * Parse and extract regex library from regexsrc, returns source with all
    * defines removed and regexlib populated with the extracted definitions
@@ -202,30 +258,57 @@
    * @static
    * @param {string} regexsrc   - regex source
    * @param {Object} regexlib   - required will contain the extracted library
+   * @param {int} lastIndex         - where to start compiling
+   * @param {int} stopIndex         - where to stop compiling
+   * @param {?callback} errcb        - call on error
    * @returns {string}          - regex source with defines removed
    */
-  function _ExtractDefineLib (regexsrc, regexlib) {
+  function _ExtractSubroutines (regexsrc, regexlib, lastIndex, stopIndex, errcb) {
     var i = 0
       , acc = []
-      , j, k, m, n
+      , j, k, m, n, r
       ;
 
-    _DefineRegex.lastIndex = i
-    ; while (m = _DefineRegex.exec(regexsrc)) {
+    (errcb instanceof Function) || (errcb = function (err, name) {throw err})
+    ; ((stopIndex |= 0) <= 0) && (stopIndex += regexsrc.length)
+    ; i = lastIndex || 0
+    // ; console.log(regexsrc, i, j)
+    ; while ((_DefineHeadRegex.lastIndex = i) <= stopIndex
+        && (m = _DefineHeadRegex.exec(regexsrc))
+        && m.index <= stopIndex) {
       acc.push(regexsrc.slice(i, m.index))
-      _NamedCaptureRegex.lastIndex = _DefineRegex.lastIndex
-      ; while (n = _NamedCaptureRegex.exec(regexsrc)) {
-        k = n[1]
-        ; j = 1
-        ; _CaptureRegex.lastIndex = i = _NamedCaptureRegex.lastIndex
-        ; while (j && (n = _CaptureRegex.exec(regexsrc))) {
-          if (n[1]) j++; else if (n[2]) --j
-          ; i = _CaptureRegex.lastIndex
+      ; i = j = _DefineHeadRegex.lastIndex
+      ; if (m[1]) continue
+      // ; console.log('found define at', m.index, acc.join(''))
+      ; while ((_SubrHeadRegex.lastIndex = j) <= stopIndex
+          && (n = _SubrHeadRegex.exec(regexsrc))
+          && (n.index <= stopIndex)) {
+        if ((k = n[1]) in regexlib
+            && !errcb(new Error(['redefine ', k, ' at ', j].join(''))
+                , k, n.index)) return
+        // ; console.log('found subroutine at', n.index)
+        ; j = _SubrHeadRegex.lastIndex
+        ; if ((_SubrTailRegex.lastIndex = 
+            (r = _CompileSource(regexsrc, true, j)).lastIndex) > stopIndex
+            || !(n = _SubrTailRegex.exec(regexsrc))
+            || (j = _SubrTailRegex.lastIndex) > stopIndex) {
+          return errcb(new Error(['bad subroutine ', k, ' at ', j].join('')))
         }
-        regexlib[k] = regexsrc.slice(_NamedCaptureRegex.lastIndex, n.index)
+        regexlib[k] = r.src
+        // ; console.log('found subroutine tail at', n.index, ':', n)
+    // ; console.log(regexsrc, i, j)
       }
+    // ; console.log(regexsrc, i, j)
+      ; if ((_DefineTailRegex.lastIndex = j) >= stopIndex
+          || !(n = _DefineTailRegex.exec(regexsrc))
+          || (i = _DefineTailRegex.lastIndex) > stopIndex) {
+        return errcb(new Error(['bad define', k, ' at ', j].join('')))
+      }
+      // ; console.log('found define tail at', n.index, ':', n)
+    // ; console.log(regexsrc, i, j)
     }
-    acc.push(regexsrc.slice(i))
+    acc.push(regexsrc.slice(i, stopIndex))
+    // ; console.log('result', i, stopIndex, acc.join(''), regexlib)
     ; return acc.join('')
   }
   
@@ -236,22 +319,31 @@
    * @static
    * @param {string} regexsrc
    * @param {Object} regexlib
+   * @param {int} lastIndex         - where to start compiling
+   * @param {int} stopIndex         - where to stop compiling
+   * @param {?callback} errcb        - call on error
    * @returns {string}
    */
-  function _EmbedNamedLib (regexsrc, regexlib) {
-    var i = 0
-      , acc = []
-      , k, m
+  function _EmbedSubroutines (regexsrc, regexlib, lastIndex, stopIndex, errcb) {
+    var acc = []
+      , i, j, k, m
       ;
 
-    _SubRegex.lastIndex = i
-    ; while (m = _SubRegex.exec(regexsrc)) {
+    (errcb instanceof Function) || (errcb = function (err, name) {throw err})
+    ; ((stopIndex |= 0) <= 0) && (stopIndex += regexsrc.length)
+    ; _SubRegex.lastIndex = lastIndex || 0
+//    ; console.log(regexsrc, regexlib, i, stopIndex, errcb)
+
+    ; while ((m = _SubRegex.exec(regexsrc))
+        && (j = _SubRegex.lastIndex) <= stopIndex) {
       acc.push(regexsrc.slice(i, m.index))
-      ; acc.push(((k = m[1]) && regexlib.hasOwnProperty(k))
-          ? regexlib(k) : m[0])
-      ; i = _SubRegex.lastIndex
+      ; acc.push(((k = m[1]) === undefined) ? m[0]
+          : regexlib.hasOwnProperty(k) ? regexlib[k]
+          : errcb(new Error(['library has no', JSON.stringify(k)
+            , 'subroutine'].join(' ')), k, m[0]))
+      ; i = j
     }
-    acc.push(regexsrc.slice(i))
+    acc.push(regexsrc.slice(i, stopIndex))
     ; return acc.join('')
   }
   
@@ -473,8 +565,9 @@ RegexHelper = Object.defineProperties(Compile, {
   , Compile: { value: Compile, enumerable: true }
   , _Compile: { value: _Compile, enumerable: true }
   , CompileSource: { value: CompileSource, enumerable: true }
-  , _ExtractDefineLib: { value: _ExtractDefineLib, enumerable: true }
-  , _EmbedNamedLib: { value: _EmbedNamedLib, enumerable: true }
+  , _CompileSource: { value: _CompileSource, enumerable: true }
+  , _ExtractSubroutines: { value: _ExtractSubroutines, enumerable: true }
+  , _EmbedSubroutines: { value: _EmbedSubroutines, enumerable: true }
   , Exec: { value: Exec, enumerable: true }
   , StickyExec: { value: StickyExec, enumerable: true }
   , _StickyExec: { value: _StickyExec, enumerable: true }
