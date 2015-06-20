@@ -28,6 +28,10 @@ I could make claims but I don't want to piss off the other libraries...  THe tru
 
 Anyway it is a lean library with both type checking and non type checking plus optional error callbacks.
 
+You can clone or download the library at https://github.com/LaughingSun/regexhelper
+
+or
+
 You can check out the API docs at http://laughingsun.github.io/proj/regexhelper/docs/module-RegexHelper.html
 
 Happy regexing!
