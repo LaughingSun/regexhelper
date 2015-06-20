@@ -17,7 +17,7 @@ Example:
 ```
 var // RegexHelper = require('regexhelper.js')  // or use a script tag depending on platform
   , RegexExec = RegexHelper.Exec,
-  , myregex = RegexHelper('\\s*(?:(?<token)?\\s*)?', 'gxy', {
+  , myregex = RegexHelper('\\s*(?:(?&token)?\\s*)?', 'gxy', {
     token: '(?<number>(?:\d++(?:\\.\\d*)?|\\.\\d+)|(?:[eE][+-]?\\d+)?)|(?<ident>\\w+)|(?<symb>[!@#$%\^&*(){}|\\[\]:;<>,\\.?\\/]+)'
   })
   , input = 'all the things I wanted to say but felt I could\'nt'
